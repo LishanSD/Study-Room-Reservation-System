@@ -45,48 +45,17 @@ class StudyRoomUnavailableException extends RuntimeException {
     }
 }
 
-class StudyRoomReservationSystem {
-    private ArrayList<StudyRoom> studyRooms = new ArrayList<StudyRoom>();
+public synchronized void addStudyRoom(StudyRoom studyRoom) {
+    studyRooms.add(studyRoom);
+}
 
-    public synchronized void reserveStudyRoom(int roomNumber) throws StudyRoomUnavailableException {
-        StudyRoom studyRoom = this.getStudyRoom(roomNumber);
-        if (studyRoom.isAvailabilityStatus() == true) {
-            studyRoom.setAvailabilityStatus(false);
-        } else {
-            throw new StudyRoomUnavailableException("Study room is already occupied.");
+public synchronized StudyRoom getStudyRoom(int roomNumber) {
+    for (StudyRoom studyRoom : studyRooms) {
+        if (studyRoom.getRoomNumber() == roomNumber) {
+            return studyRoom;
         }
     }
-
-    public synchronized void releaseStudyRoom(int roomNumber) {
-        StudyRoom studyRoom = this.getStudyRoom(roomNumber);
-        studyRoom.setAvailabilityStatus(true);
-    }
-
-    public synchronized void displayStudyRoomStatus() {
-        System.out.println("Study Room Status:");
-        for (StudyRoom studyRoom : studyRooms) {
-            if (studyRoom.isAvailabilityStatus() == true) {
-                System.out.println("Room Number: " + studyRoom.getRoomNumber() + ", Capacity: "
-                        + studyRoom.getCapacity() + ", Availability: Available");
-            } else {
-                System.out.println("Room Number: " + studyRoom.getRoomNumber() + ", Capacity: "
-                        + studyRoom.getCapacity() + ", Availability: Not available");
-            }
-        }
-    }
-
-    public synchronized void addStudyRoom(StudyRoom studyRoom) {
-        studyRooms.add(studyRoom);
-    }
-
-    public synchronized StudyRoom getStudyRoom(int roomNumber) {
-        for (StudyRoom studyRoom : studyRooms) {
-            if (studyRoom.getRoomNumber() == roomNumber) {
-                return studyRoom;
-            }
-        }
-        return null;
-    }
+    return null;
 }
 
 public class Main {
